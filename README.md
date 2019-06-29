@@ -1,10 +1,12 @@
-# ytmp3dl-web
+# `ytmp3dl-web`
 
 YouTube mp3 downloader - web module for keeping track of downloads.
 
 @TODO Screenshot
 
-This module uses the [ytmp3dl-server](https://github.com/opensoars/ytmp3dl-server) module, which uses the [ytmp3dl-core](https://github.com/opensoars/ytmp3dl-core) module. `ytmp3dl-web` can be used in combination with the [ytmp3dl-chrome](https://github.com/opensoars/ytmp3dl-chrome) Chrome extension.
+This module uses the [ytmp3dl-server](https://github.com/opensoars/ytmp3dl-server) module, which uses the [ytmp3dl-core](https://github.com/opensoars/ytmp3dl-core) module.
+
+`ytmp3dl-web` can be used in combination with the [ytmp3dl-chrome](https://github.com/opensoars/ytmp3dl-chrome) Chrome extension.
 
 ## Install
 
