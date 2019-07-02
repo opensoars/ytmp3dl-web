@@ -8,6 +8,9 @@ This module uses the [ytmp3dl-server](https://github.com/opensoars/ytmp3dl-serve
 
 `ytmp3dl-web` can be used in combination with the [ytmp3dl-chrome](https://github.com/opensoars/ytmp3dl-chrome) Chrome extension.
 
+`ytmp3dl-web` will be developed using React and GraphQL.
+
+
 ## Install
 
 @TODO
