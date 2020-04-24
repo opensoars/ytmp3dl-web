@@ -63,7 +63,7 @@ function App() {
       <div className="App">
         <Container>
           <Header />
-          <Divider />
+          {/* <Divider /> */}
           <Downloads />
         </Container>
       </div>

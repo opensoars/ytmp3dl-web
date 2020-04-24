@@ -12,7 +12,15 @@ export default function Header() {
             Powered by ytmp3dl-server and ytmp3dl-core
           </Typography>
         </Grid>
-        <Grid item>
+        <Grid
+          item
+          style={{
+            flexGrow: 1,
+            display: 'flex',
+            flexDirection: 'row',
+            marginLeft: 32
+          }}
+        >
           <NewDownlod />
         </Grid>
       </Grid>
