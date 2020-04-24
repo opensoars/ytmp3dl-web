@@ -51,6 +51,9 @@ export default function NewDownlod() {
         label="New download"
         inputRef={inputRef}
         style={{ flexGrow: 1, marginTop: 6 }}
+        onKeyDown={evt => {
+          if (evt.which === 13) handleNewDownloadClick();
+        }}
       />
       <Button
         onClick={handleNewDownloadClick}

@@ -318,7 +318,7 @@ export default function Downloads() {
   useEffect(() => {
     const refetchInterval = setInterval(() => {
       refetch();
-    }, 500);
+    }, 333);
 
     return () => {
       clearInterval(refetchInterval);
