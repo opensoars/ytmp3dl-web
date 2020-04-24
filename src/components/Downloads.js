@@ -10,7 +10,8 @@ import {
   LinearProgress,
   withStyles,
   lighten,
-  useTheme
+  useTheme,
+  useMediaQuery
 } from '@material-ui/core';
 
 const DOWNLOADS = gql`
@@ -37,7 +38,8 @@ const DOWNLOADS = gql`
         percentage
       }
       working_url
-      output_file
+      output_location
+      file_name
     }
   }
 `;
@@ -63,6 +65,8 @@ const BorderLinearProgress = withStyles({
 function Download({ dl }) {
   const theme = useTheme();
   const [retryDownload, { data }] = useMutation(RETRY_DOWNLOAD);
+
+  const isDesktop = useMediaQuery(theme.breakpoints.up('lg'));
 
   function handleRetryClick() {
     retryDownload({ variables: { v: dl.v } });
@@ -120,7 +124,7 @@ function Download({ dl }) {
         <div
           style={{
             display: 'flex',
-            flexDirection: 'row',
+            flexDirection: isDesktop ? 'row' : 'column',
             justifyContent: 'space-between'
           }}
         >
@@ -129,8 +133,8 @@ function Download({ dl }) {
             variant="determinate"
             color="secondary"
             style={{
-              marginLeft: theme.spacing(1),
-              marginTop: 6,
+              marginLeft: isDesktop ? theme.spacing(1) : 0,
+              marginTop: isDesktop ? 6 : 0,
               heigh: 10,
               flexGrow: 1
             }}
@@ -140,7 +144,7 @@ function Download({ dl }) {
         <div
           style={{
             display: 'flex',
-            flexDirection: 'row',
+            flexDirection: isDesktop ? 'row' : 'column',
             justifyContent: 'space-between'
           }}
         >
@@ -149,8 +153,8 @@ function Download({ dl }) {
             variant="determinate"
             color="secondary"
             style={{
-              marginLeft: theme.spacing(1),
-              marginTop: 6,
+              marginLeft: isDesktop ? theme.spacing(1) : 0,
+              marginTop: isDesktop ? 6 : 0,
               heigh: 10,
               flexGrow: 1
             }}
@@ -161,8 +165,9 @@ function Download({ dl }) {
         <div
           style={{
             display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between'
+            flexDirection: isDesktop ? 'row' : 'column',
+            justifyContent: 'space-between',
+            width: isDesktop ? '100%' : '100%'
           }}
         >
           <Paper
@@ -170,8 +175,9 @@ function Download({ dl }) {
             style={{
               overflow: 'auto',
               height: 150,
-              minWidth: 333,
-              maxWidth: 333,
+              minWidth: isDesktop ? 333 : 0,
+              maxWidth: isDesktop ? 333 : 'unset',
+              width: isDesktop ? 333 : '100%',
               width: 'auto',
               padding: theme.spacing(1),
               margin: '16px 0px'
@@ -192,9 +198,12 @@ function Download({ dl }) {
               style={{
                 overflow: 'auto',
                 flexGrow: 1,
-                marginLeft: theme.spacing(1),
+                marginLeft: isDesktop ? theme.spacing(1) : 0,
                 height: 166,
-                marginTop: 16
+                marginTop: isDesktop ? 16 : 0,
+                marginBottom: theme.spacing(1)
+                // width: '100%',
+                // minWidth: '100%'
               }}
             >
               <pre
@@ -212,13 +221,20 @@ function Download({ dl }) {
         </div>
 
         <pre style={{ width: '100%', overflow: 'hidden', margin: 0 }}>
-          DL:{' '}
+          DL:{'   '}
           <a target="_blank" href={dl.working_url}>
             {dl.working_url}
           </a>
         </pre>
         <pre style={{ width: '100%', overflow: 'hidden', margin: 0 }}>
-          OUT: <a href={'file:///' + dl.output_file}>{dl.output_file}</a>
+          OUT:{'  '}
+          <a href={'file:///' + dl.output_location}>{dl.output_location}</a>
+        </pre>
+        <pre style={{ width: '100%', overflow: 'hidden', margin: 0 }}>
+          FILE:{' '}
+          <a target="_blank" href={'http://localhost:3333/' + dl.file_name}>
+            {dl.file_name}
+          </a>
         </pre>
       </Box>
     </Paper>
