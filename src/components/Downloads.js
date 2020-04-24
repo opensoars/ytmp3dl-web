@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 import {
@@ -76,10 +76,12 @@ const BorderLinearProgress = withStyles({
   }
 })(LinearProgress);
 
-function Download({ dl }) {
+function Download({ dl, show }) {
   const theme = useTheme();
   const [retryDownload, { retryData }] = useMutation(RETRY_DOWNLOAD);
   const [deleteDownload, { deleteData }] = useMutation(DELETE_DOWNLOAD);
+
+  const [display, setDisplay] = useState('block');
 
   const isDesktop = useMediaQuery(theme.breakpoints.up('lg'));
 
@@ -91,12 +93,26 @@ function Download({ dl }) {
   }
   // console.log('theme.palette', theme.palette);
 
+  const paperRef = useRef();
+
+  if (paperRef.current) {
+    console.log('cool');
+
+    if (show) paperRef.current.style.display = 'block';
+    else
+      setTimeout(() => {
+        paperRef.current.style.display = 'none';
+      }, 200);
+  }
+
   return (
     // <Fade in>
-    <Fade in timeout={500}>
+    <Fade in={show}>
       <Paper
+        ref={paperRef}
         elevation={5}
         style={{
+          display: display,
           marginTop: theme.spacing(1),
           overflow: 'auto',
           transition: 'all 0.5s ease',
@@ -311,21 +327,21 @@ export default function Downloads() {
             value="progress"
             control={<Checkbox color="secondary" />}
             label="Progress"
-            labelPlacement="left"
+            labelPlacement="end"
             checked={showProgress}
           />
           <FormControlLabel
             value="done"
             control={<Checkbox color="secondary" />}
             label="Done"
-            labelPlacement="left"
+            labelPlacement="end"
             checked={showDone}
           />
           <FormControlLabel
             value="error"
             control={<Checkbox color="secondary" />}
             label="Error"
-            labelPlacement="left"
+            labelPlacement="end"
             checked={showError}
           />
         </FormGroup>
@@ -333,21 +349,26 @@ export default function Downloads() {
 
       {[...data.downloads]
         .reverse()
-        .filter(dl => {
-          console.log('dl', dl);
+        .map(dl => {
+          dl.show = false;
 
-          if (showError && dl.error) return true;
-          if (!showError && dl.error) return false;
-          if (!showProgress && !dl.completed && !dl.error) return false;
-          if (!showDone && dl.completed) return false;
+          if (showDone && dl.completed && !dl.error) dl.show = true;
 
-          return true;
+          if (showError && dl.error) dl.show = true;
+
+          return dl;
+          // if (showError && dl.error) return true;
+          // if (!showError && dl.error) return false;
+          // if (!showProgress && !dl.completed && !dl.error) return false;
+          // if (!showDone && dl.completed) return false;
+
+          // return true;
         })
-        .map((dl, i) => (
-          <Fade in key={dl.v} timeout={500}>
-            <Download dl={dl} />
-          </Fade>
-        ))}
+        .map((dl, i) => {
+          console.log('fina dl', dl);
+
+          return <Download key={dl.v} dl={dl} show={dl.show} />;
+        })}
     </>
   );
   // return data.rates.map(({ currency, rate }) => (
