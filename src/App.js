@@ -3,7 +3,15 @@ import './App.css';
 import Downloads from './components/Downloads';
 
 import { red, blue } from '@material-ui/core/colors';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core';
+import {
+  createMuiTheme,
+  ThemeProvider,
+  Container,
+  Divider
+} from '@material-ui/core';
+
+import Header from './components/Header';
+import NewDownlod from './components/NewDownload';
 
 const themes = {
   dark: createMuiTheme({
@@ -53,7 +61,11 @@ function App() {
   return (
     <ThemeProvider theme={themes.light}>
       <div className="App">
-        <Downloads />
+        <Container>
+          <Header />
+          <Divider />
+          <Downloads />
+        </Container>
       </div>
     </ThemeProvider>
   );

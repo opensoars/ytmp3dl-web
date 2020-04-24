@@ -205,7 +205,7 @@ function Download({ dl }) {
                 // }}
                 style={{ margin: 0, padding: theme.spacing(1) }}
               >
-                {dl.errs.map((err, i) => err)}
+                {dl.errs.map((err, i) => err + '\n\n')}
               </pre>
             </Paper>
           ) : null}
@@ -243,11 +243,11 @@ export default function Downloads() {
   if (error) return <p>Error :(</p>;
 
   return (
-    <Container>
+    <>
       {data.downloads.map((dl, i) => (
         <Download key={i} dl={dl} />
       ))}
-    </Container>
+    </>
   );
   // return data.rates.map(({ currency, rate }) => (
   //   <div key={currency}>
