@@ -52,6 +52,14 @@ const RETRY_DOWNLOAD = gql`
   }
 `;
 
+const DELETE_DOWNLOAD = gql`
+  mutation deleteDownload($v: String!) {
+    deleteDownload(v: $v) {
+      v
+    }
+  }
+`;
+
 const BorderLinearProgress = withStyles({
   root: {
     height: 10
@@ -64,12 +72,16 @@ const BorderLinearProgress = withStyles({
 
 function Download({ dl }) {
   const theme = useTheme();
-  const [retryDownload, { data }] = useMutation(RETRY_DOWNLOAD);
+  const [retryDownload, { retryData }] = useMutation(RETRY_DOWNLOAD);
+  const [deleteDownload, { deleteData }] = useMutation(DELETE_DOWNLOAD);
 
   const isDesktop = useMediaQuery(theme.breakpoints.up('lg'));
 
   function handleRetryClick() {
     retryDownload({ variables: { v: dl.v } });
+  }
+  function handleDeleteClick() {
+    deleteDownload({ variables: { v: dl.v } });
   }
   console.log('theme.palette', theme.palette);
 
@@ -87,8 +99,13 @@ function Download({ dl }) {
       }}
     >
       <Box p={1}>
-        <Button color="primary" variant="contained" style={{ float: 'right' }}>
-          Remove DL
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={handleDeleteClick}
+          style={{ float: 'right' }}
+        >
+          X
         </Button>
 
         <Button
@@ -230,12 +247,13 @@ function Download({ dl }) {
           OUT:{'  '}
           <a href={'file:///' + dl.output_location}>{dl.output_location}</a>
         </pre>
-        <pre style={{ width: '100%', overflow: 'hidden', margin: 0 }}>
+        {/* <pre style={{ width: '100%', overflow: 'hidden', margin: 0 }}>
           FILE:{' '}
           <a target="_blank" href={'http://localhost:3333/' + dl.file_name}>
             {dl.file_name}
           </a>
-        </pre>
+        </pre> */}
+        <audio src={'http://localhost:3333/' + dl.file_name} controls />
       </Box>
     </Paper>
   );
