@@ -336,14 +336,15 @@ export default function Downloads() {
         .filter(dl => {
           console.log('dl', dl);
 
-          if (!showProgress && !dl.completed && !dl.err) return false;
+          if (showError && dl.error) return true;
+          if (!showError && dl.error) return false;
+          if (!showProgress && !dl.completed && !dl.error) return false;
           if (!showDone && dl.completed) return false;
-          if (!showError && dl.err) return false;
 
           return true;
         })
         .map((dl, i) => (
-          <Fade in key={i} timeout={500}>
+          <Fade in key={dl.v} timeout={500}>
             <Download dl={dl} />
           </Fade>
         ))}
