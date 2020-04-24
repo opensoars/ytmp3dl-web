@@ -18,7 +18,8 @@ import {
   FormControlLabel,
   Checkbox,
   FormGroup,
-  Grow
+  Grow,
+  Zoom
 } from '@material-ui/core';
 
 const DOWNLOADS = gql`
@@ -108,7 +109,7 @@ function Download({ dl, show }) {
 
   return (
     // <Fade in>
-    <Grow in={show}>
+    <Zoom in={show}>
       <Paper
         ref={paperRef}
         elevation={5}
@@ -175,7 +176,11 @@ function Download({ dl, show }) {
               justifyContent: 'space-between'
             }}
           >
-            <div>Stream progress</div>
+            <div style={{ minWidth: 150 }}>
+              Download:{' '}
+              {dl.streamProgress ? Math.floor(dl.streamProgress.percentage) : 0}
+              %
+            </div>
             <BorderLinearProgress
               variant="determinate"
               color="secondary"
@@ -195,7 +200,13 @@ function Download({ dl, show }) {
               justifyContent: 'space-between'
             }}
           >
-            <div>Conversion progress</div>
+            <div style={{ minWidth: 150 }}>
+              Conversion:{' '}
+              {dl.conversionProgress
+                ? Math.floor(dl.conversionProgress.percentage)
+                : 0}
+              %
+            </div>
             <BorderLinearProgress
               variant="determinate"
               color="secondary"
@@ -292,7 +303,7 @@ function Download({ dl, show }) {
           />
         </Box>
       </Paper>
-    </Grow>
+    </Zoom>
   );
 }
 
