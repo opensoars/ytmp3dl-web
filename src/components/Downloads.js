@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 import {
@@ -12,7 +12,12 @@ import {
   lighten,
   useTheme,
   useMediaQuery,
-  Fade
+  Fade,
+  FormControl,
+  FormLabel,
+  FormControlLabel,
+  Checkbox,
+  FormGroup
 } from '@material-ui/core';
 
 const DOWNLOADS = gql`
@@ -259,7 +264,11 @@ function Download({ dl }) {
             {dl.file_name}
           </a>
         </pre> */}
-          <audio src={'http://localhost:3333/' + dl.file_name} controls />
+          <audio
+            style={{ marginTop: theme.spacing(1) }}
+            src={'http://localhost:3333/' + dl.file_name}
+            controls
+          />
         </Box>
       </Paper>
     </Fade>
@@ -268,7 +277,11 @@ function Download({ dl }) {
 
 export default function Downloads() {
   const { loading, error, data, refetch } = useQuery(DOWNLOADS);
-  console.log();
+  // console.log();
+
+  const [showProgress, setShowProgress] = useState(true);
+  const [showDone, setShowDone] = useState(true);
+  const [showError, setShowError] = useState(true);
 
   useEffect(() => {
     const refetchInterval = setInterval(() => {
@@ -283,13 +296,57 @@ export default function Downloads() {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
 
+  function handleFilterChange(evt) {
+    console.log(evt.target.value);
+    if (evt.target.value === 'progress') setShowProgress(evt.target.checked);
+    else if (evt.target.value === 'done') setShowDone(evt.target.checked);
+    else if (evt.target.value === 'error') setShowError(evt.target.checked);
+  }
+
   return (
     <>
-      {data.downloads.reverse().map((dl, i) => (
-        <Fade in key={i} timeout={500}>
-          <Download dl={dl} />
-        </Fade>
-      ))}
+      <FormControl component="fieldset">
+        <FormGroup aria-label="position" row onChange={handleFilterChange}>
+          <FormControlLabel
+            value="progress"
+            control={<Checkbox color="secondary" />}
+            label="Progress"
+            labelPlacement="left"
+            checked={showProgress}
+          />
+          <FormControlLabel
+            value="done"
+            control={<Checkbox color="secondary" />}
+            label="Done"
+            labelPlacement="left"
+            checked={showDone}
+          />
+          <FormControlLabel
+            value="error"
+            control={<Checkbox color="secondary" />}
+            label="Error"
+            labelPlacement="left"
+            checked={showError}
+          />
+        </FormGroup>
+      </FormControl>
+
+      {data.downloads
+        .reverse()
+        .filter(dl => {
+          console.log('dl', dl);
+
+          if (!showProgress && !dl.completed && !dl.err) return false;
+          if (!showDone && dl.completed) return false;
+          if (!showError && dl.err) return false;
+
+          return true;
+        })
+        .map((dl, i) => (
+          <Fade in key={i} timeout={500}>
+            <Download dl={dl} />
+          </Fade>
+        ))}
     </>
   );
   // return data.rates.map(({ currency, rate }) => (
