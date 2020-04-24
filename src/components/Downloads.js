@@ -1,7 +1,17 @@
-import React from 'react';
-import { useQuery } from '@apollo/react-hooks';
+import React, { useEffect } from 'react';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
-import { Paper, Box, Container, Typography } from '@material-ui/core';
+import {
+  Paper,
+  Box,
+  Container,
+  Typography,
+  Button,
+  LinearProgress,
+  withStyles,
+  lighten,
+  useTheme
+} from '@material-ui/core';
 
 const DOWNLOADS = gql`
   {
@@ -27,84 +37,189 @@ const DOWNLOADS = gql`
         percentage
       }
       working_url
-      file_location
+      output_file
     }
   }
 `;
 
+const RETRY_DOWNLOAD = gql`
+  mutation retryDownload($v: String!) {
+    retryDownload(v: $v) {
+      v
+    }
+  }
+`;
+
+const BorderLinearProgress = withStyles({
+  root: {
+    height: 10
+    //   backgroundColor: lighten('#ff6c5c', 0.5)
+  },
+  bar: {
+    //   backgroundColor: '#ff6c5c'
+  }
+})(LinearProgress);
+
 function Download({ dl }) {
+  const theme = useTheme();
+  const [retryDownload, { data }] = useMutation(RETRY_DOWNLOAD);
+
+  function handleRetryClick() {
+    retryDownload({ variables: { v: dl.v } });
+  }
+  console.log('theme.palette', theme.palette);
+
   return (
-    <Paper elevation={5} style={{ marginTop: 8 }}>
+    <Paper
+      elevation={5}
+      style={{
+        marginTop: theme.spacing(1),
+        overflow: 'auto',
+        background: dl.completed
+          ? theme.palette.success.light
+          : dl.error
+          ? theme.palette.warning.light
+          : theme.palette.background.paper
+      }}
+    >
       <Box p={1}>
-        <div variant="body1">
-          Video info:{' '}
-          <pre style={{ width: '100%', overflow: 'auto' }}>
-            Title: {dl.video_info ? dl.video_info.title : null}
-            <br />
-            Length seconds: {dl.video_info ? dl.video_info.title : null}
-            <br />
-          </pre>
-        </div>
-        <Typography variant="body1">V: {dl.v}</Typography>
+        <Button color="primary" variant="contained" style={{ float: 'right' }}>
+          Remove DL
+        </Button>
+
+        <Button
+          color="secondary"
+          variant="contained"
+          onClick={handleRetryClick}
+          style={{ float: 'right', marginRight: theme.spacing(1) }}
+        >
+          Retry
+        </Button>
+
         <Typography variant="body1">
-          Start:{' '}
-          {dl.start ? new Date(parseInt(dl.start)).toLocaleString() : null}
+          Title: {dl.video_info ? dl.video_info.title : '?'}
+        </Typography>
+        <Typography variant="body1"></Typography>
+        <Typography variant="body1">
+          <a
+            target="_blank"
+            href={`https://youtube.com/watch?v=${dl.v}`}
+          >{`youtube.com/watch?v=`}</a>
+          {dl.v} | Length seconds:{' '}
+          {dl.video_info ? dl.video_info.length_seconds : null}
         </Typography>
         <Typography variant="body1">
-          Completed: {dl.completed ? 'true' : 'false'}
+          Completed: <b>{dl.completed ? 'true' : 'false'}</b> | Error:{' '}
+          <b>{dl.error ? 'true' : 'false'}</b> | Start:{' '}
+          {/* {dl.start ? new Date(parseInt(dl.start)).toLocaleString() : null} */}
+          {dl.start
+            ? new Date(parseInt(dl.start)).toString().replace(/\sGMT.+/, '')
+            : null}
         </Typography>
-        <Typography variant="body1">
-          Error: {dl.error ? 'true' : 'false'}
-        </Typography>
-        <div>
-          Errs:{' '}
-          <pre style={{ width: '100%', overflow: 'auto' }}>
-            {dl.errs.map((err, i) => err)}
-          </pre>
+        <Typography variant="body1"></Typography>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between'
+          }}
+        >
+          <div>Stream progress</div>
+          <BorderLinearProgress
+            variant="determinate"
+            color="secondary"
+            style={{
+              marginLeft: theme.spacing(1),
+              marginTop: 6,
+              heigh: 10,
+              flexGrow: 1
+            }}
+            value={dl.streamProgress ? dl.streamProgress.percentage : 0}
+          />
         </div>
-        <div>
-          Methods called:{' '}
-          <pre style={{ width: '100%', overflow: 'auto', maxHeight: 250 }}>
-            {dl.methodsCalled.map((method, i) => `${i}: ${method}\n`)}
-          </pre>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between'
+          }}
+        >
+          <div>Conversion progress</div>
+          <BorderLinearProgress
+            variant="determinate"
+            color="secondary"
+            style={{
+              marginLeft: theme.spacing(1),
+              marginTop: 6,
+              heigh: 10,
+              flexGrow: 1
+            }}
+            value={dl.conversionProgress ? dl.conversionProgress.percentage : 0}
+          />
         </div>
-        <div variant="body1">
-          Working url:{' '}
-          <pre style={{ width: '100%', overflow: 'auto' }}>
-            <a href={dl.working_url}>{dl.working_url}</a>
-          </pre>
+
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between'
+          }}
+        >
+          <Paper
+            elevation={5}
+            style={{
+              overflow: 'auto',
+              height: 150,
+              minWidth: 333,
+              maxWidth: 333,
+              width: 'auto',
+              padding: theme.spacing(1),
+              margin: '16px 0px'
+            }}
+          >
+            <pre style={{ margin: 0 }}>
+              {[...dl.methodsCalled]
+                .reverse()
+                .map(
+                  (method, i) =>
+                    `${dl.methodsCalled.length - i - 1}: ${method}\n`
+                )}
+            </pre>
+          </Paper>
+
+          {dl.errs && dl.errs.length ? (
+            <Paper
+              style={{
+                overflow: 'auto',
+                flexGrow: 1,
+                marginLeft: theme.spacing(1),
+                height: 166,
+                marginTop: 16
+              }}
+            >
+              <pre
+                // style={{
+                //   overflow: 'auto',
+                //   flexGrow: 1,
+                //   marginLeft: theme.spacing(1)
+                // }}
+                style={{ margin: 0, padding: theme.spacing(1) }}
+              >
+                {dl.errs.map((err, i) => err)}
+              </pre>
+            </Paper>
+          ) : null}
         </div>
-        <div variant="body1">
-          File location:{' '}
-          <pre style={{ width: '100%', overflow: 'auto' }}>
-            <a href={'file:///' + dl.file_location}>{dl.file_location}</a>
-          </pre>
-        </div>
-        <div>
-          Stream progress:{' '}
-          <pre style={{ width: '100%', overflow: 'auto' }}>
-            bytesWritten:{' '}
-            {dl.streamProgress ? dl.streamProgress.bytesWritten : null}
-            <br />
-            bytesTotal:{' '}
-            {dl.streamProgress ? dl.streamProgress.bytesTotal : null}
-            <br />
-            percentage:{' '}
-            {dl.streamProgress ? dl.streamProgress.percentage : null}
-          </pre>
-        </div>
-        <div>
-          Conversion progress progress:{' '}
-          <pre style={{ width: '100%', overflow: 'auto' }}>
-            current:{' '}
-            {dl.conversionProgress ? dl.conversionProgress.current : null}
-            <br />
-            total: {dl.conversionProgress ? dl.conversionProgress.total : null}
-            <br />
-            percentage:{' '}
-            {dl.conversionProgress ? dl.conversionProgress.percentage : null}
-          </pre>
-        </div>
+
+        <pre style={{ width: '100%', overflow: 'hidden', margin: 0 }}>
+          DL:{' '}
+          <a target="_blank" href={dl.working_url}>
+            {dl.working_url}
+          </a>
+        </pre>
+        <pre style={{ width: '100%', overflow: 'hidden', margin: 0 }}>
+          OUT: <a href={'file:///' + dl.output_file}>{dl.output_file}</a>
+        </pre>
       </Box>
     </Paper>
   );
@@ -113,6 +228,16 @@ function Download({ dl }) {
 export default function Downloads() {
   const { loading, error, data, refetch } = useQuery(DOWNLOADS);
   console.log();
+
+  useEffect(() => {
+    const refetchInterval = setInterval(() => {
+      refetch();
+    }, 500);
+
+    return () => {
+      clearInterval(refetchInterval);
+    };
+  }, []);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
