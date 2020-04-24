@@ -17,7 +17,8 @@ import {
   FormLabel,
   FormControlLabel,
   Checkbox,
-  FormGroup
+  FormGroup,
+  Grow
 } from '@material-ui/core';
 
 const DOWNLOADS = gql`
@@ -107,23 +108,27 @@ function Download({ dl, show }) {
 
   return (
     // <Fade in>
-    <Fade in={show}>
+    <Grow in={show}>
       <Paper
         ref={paperRef}
         elevation={5}
         style={{
           display: display,
           marginTop: theme.spacing(1),
-          overflow: 'auto',
-          transition: 'all 0.5s ease',
-          background: dl.completed
-            ? theme.palette.success.light
-            : dl.error
-            ? theme.palette.warning.light
-            : theme.palette.background.paper
+          overflow: 'auto'
         }}
       >
-        <Box p={1}>
+        <Box
+          p={1}
+          style={{
+            transition: 'all 0.5s ease',
+            background: dl.completed
+              ? theme.palette.success.light
+              : dl.error
+              ? theme.palette.warning.light
+              : theme.palette.background.paper
+          }}
+        >
           <Button
             color="primary"
             variant="contained"
@@ -287,7 +292,7 @@ function Download({ dl, show }) {
           />
         </Box>
       </Paper>
-    </Fade>
+    </Grow>
   );
 }
 
@@ -353,8 +358,8 @@ export default function Downloads() {
           dl.show = false;
 
           if (showDone && dl.completed && !dl.error) dl.show = true;
-
           if (showError && dl.error) dl.show = true;
+          if (showProgress && !dl.completed && !dl.error) dl.show = true;
 
           return dl;
           // if (showError && dl.error) return true;
