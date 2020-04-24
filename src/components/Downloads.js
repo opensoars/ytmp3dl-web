@@ -331,7 +331,7 @@ export default function Downloads() {
         </FormGroup>
       </FormControl>
 
-      {data.downloads
+      {[...data.downloads]
         .reverse()
         .filter(dl => {
           console.log('dl', dl);
