@@ -308,22 +308,24 @@ function Download({ dl, show }) {
 }
 
 export default function Downloads() {
-  const { loading, error, data, refetch } = useQuery(DOWNLOADS);
+  const { loading, error, data, refetch } = useQuery(DOWNLOADS, {
+    pollInterval: 1000
+  });
   // console.log();
 
   const [showProgress, setShowProgress] = useState(true);
   const [showDone, setShowDone] = useState(true);
   const [showError, setShowError] = useState(true);
 
-  useEffect(() => {
-    const refetchInterval = setInterval(() => {
-      refetch();
-    }, 333);
+  // useEffect(() => {
+  //   const refetchInterval = setInterval(() => {
+  //     refetch();
+  //   }, 333);
 
-    return () => {
-      clearInterval(refetchInterval);
-    };
-  }, []);
+  //   return () => {
+  //     clearInterval(refetchInterval);
+  //   };
+  // }, []);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
