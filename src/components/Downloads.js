@@ -1,24 +1,19 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 import {
   Paper,
   Box,
-  Container,
   Typography,
   Button,
   LinearProgress,
   withStyles,
-  lighten,
   useTheme,
   useMediaQuery,
-  Fade,
   FormControl,
-  FormLabel,
   FormControlLabel,
   Checkbox,
   FormGroup,
-  Grow,
   Zoom
 } from '@material-ui/core';
 
@@ -98,8 +93,6 @@ function Download({ dl, show }) {
   const paperRef = useRef();
 
   if (paperRef.current) {
-    console.log('cool');
-
     if (show) paperRef.current.style.display = 'block';
     else
       setTimeout(() => {
@@ -179,7 +172,8 @@ function Download({ dl, show }) {
             <div style={{ minWidth: 150 }}>
               Download:{' '}
               {dl.streamProgress ? Math.floor(dl.streamProgress.percentage) : 0}
-              %
+              % ({dl.streamProgress.bytesWritten}B/
+              {dl.streamProgress.bytesTotal}B)
             </div>
             <BorderLinearProgress
               variant="determinate"
@@ -383,8 +377,6 @@ export default function Downloads() {
           // return true;
         })
         .map((dl, i) => {
-          console.log('fina dl', dl);
-
           return <Download key={dl.v} dl={dl} show={dl.show} />;
         })}
     </>

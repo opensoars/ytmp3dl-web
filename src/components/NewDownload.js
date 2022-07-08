@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { TextField, Paper, Box, Button } from '@material-ui/core';
+import { TextField, Button } from '@material-ui/core';
 import { useMutation } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 
@@ -15,7 +15,7 @@ function getVideoId(str) {
   var video_id = '';
   if (str.length === 11) return str;
   try {
-    str = str.replace(/\#/, '');
+    str = str.replace(/#/, '');
     var q = str.split('/watch?')[1],
       qs = q.split('&');
     for (var i = 0; i < qs.length; i += 1) {
@@ -33,7 +33,8 @@ function getVideoId(str) {
 export default function NewDownlod() {
   const inputRef = useRef();
 
-  const [startDownload, { data }] = useMutation(START_DOWNLOAD);
+  // const [startDownload, { data }] = useMutation(START_DOWNLOAD);
+  const [startDownload] = useMutation(START_DOWNLOAD);
 
   function handleNewDownloadClick() {
     const v = getVideoId(inputRef.current.value);
@@ -46,7 +47,6 @@ export default function NewDownlod() {
   return (
     <>
       <TextField
-        style={{ marginTop: 8 }}
         color="secondary"
         label="New download"
         inputRef={inputRef}

@@ -3,15 +3,9 @@ import './App.css';
 import Downloads from './components/Downloads';
 
 import { red, blue } from '@material-ui/core/colors';
-import {
-  createMuiTheme,
-  ThemeProvider,
-  Container,
-  Divider
-} from '@material-ui/core';
+import { createMuiTheme, ThemeProvider, Container } from '@material-ui/core';
 
 import Header from './components/Header';
-import NewDownlod from './components/NewDownload';
 
 const themes = {
   dark: createMuiTheme({
