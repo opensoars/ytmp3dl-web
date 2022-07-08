@@ -75,10 +75,13 @@ const BorderLinearProgress = withStyles({
 
 function Download({ dl, show }) {
   const theme = useTheme();
-  const [retryDownload, { retryData }] = useMutation(RETRY_DOWNLOAD);
-  const [deleteDownload, { deleteData }] = useMutation(DELETE_DOWNLOAD);
+  // const [retryDownload, { retryData }] = useMutation(RETRY_DOWNLOAD);
+  // const [deleteDownload, { deleteData }] = useMutation(DELETE_DOWNLOAD);
+  const [retryDownload] = useMutation(RETRY_DOWNLOAD);
+  const [deleteDownload] = useMutation(DELETE_DOWNLOAD);
 
-  const [display, setDisplay] = useState('block');
+  // const [display, setDisplay] = useState('block');
+  const display = 'block';
 
   const isDesktop = useMediaQuery(theme.breakpoints.up('lg'));
 
@@ -149,6 +152,7 @@ function Download({ dl, show }) {
             <a
               target="_blank"
               href={`https://youtube.com/watch?v=${dl.v}`}
+              rel="noopener noreferrer"
             >{`youtube.com/watch?v=`}</a>
             {dl.v} | Length seconds:{' '}
             {dl.video_info ? dl.video_info.length_seconds : null}
@@ -231,7 +235,6 @@ function Download({ dl, show }) {
                 height: 150,
                 minWidth: isDesktop ? 333 : 0,
                 maxWidth: isDesktop ? 333 : 'unset',
-                width: isDesktop ? 333 : '100%',
                 width: 'auto',
                 padding: theme.spacing(1),
                 margin: '16px 0px'
@@ -276,7 +279,7 @@ function Download({ dl, show }) {
 
           <pre style={{ width: '100%', overflow: 'hidden', margin: 0 }}>
             DL:{'   '}
-            <a target="_blank" href={dl.working_url}>
+            <a target="_blank" href={dl.working_url} rel="noopener noreferrer">
               {dl.working_url}
             </a>
           </pre>
@@ -302,7 +305,7 @@ function Download({ dl, show }) {
 }
 
 export default function Downloads() {
-  const { loading, error, data, refetch } = useQuery(DOWNLOADS, {
+  const { loading, error, data } = useQuery(DOWNLOADS, {
     pollInterval: 1000
   });
   // console.log();

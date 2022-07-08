@@ -1,16 +1,5 @@
 import React from 'react';
-import {
-  Paper,
-  Typography,
-  Box,
-  Grid,
-  Fade,
-  FormControl,
-  FormLabel,
-  FormControlLabel,
-  Checkbox,
-  FormGroup
-} from '@material-ui/core';
+import { Typography, Grid, Fade } from '@material-ui/core';
 import NewDownlod from './NewDownload';
 
 export default function Header() {
