@@ -176,8 +176,8 @@ function Download({ dl, show }) {
             <div style={{ minWidth: 150 }}>
               Download:{' '}
               {dl.streamProgress ? Math.floor(dl.streamProgress.percentage) : 0}
-              % ({dl.streamProgress.bytesWritten}B/
-              {dl.streamProgress.bytesTotal}B)
+              % ({dl.streamProgress?.bytesWritten}B/
+              {dl.streamProgress?.bytesTotal}B)
             </div>
             <BorderLinearProgress
               variant="determinate"
