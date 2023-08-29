@@ -18,7 +18,8 @@
     "start": "BROWSER=google-chrome PORT=3005 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "serve": "node ./scripts/server.js"
   },
   "eslintConfig": {
     "extends": "react-app"
