@@ -105,7 +105,7 @@ function Download({ dl, show }) {
   }
 
   const streamProgressPercentage = dl.streamProgress
-    ? Math.floor(dl.streamProgress.percentage)
+    ? dl.streamProgress.percentage
     : 0;
 
   const now = Date.now();
@@ -195,7 +195,7 @@ function Download({ dl, show }) {
             }}
           >
             <div style={{ minWidth: 150 }}>
-              Download: {streamProgressPercentage}% (
+              Download: {Math.round(streamProgressPercentage)}% (
               {dl.streamProgress?.bytesWritten}B/
               {dl.streamProgress?.bytesTotal}B)
               {percentageLeft
