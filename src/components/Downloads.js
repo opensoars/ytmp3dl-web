@@ -103,20 +103,20 @@ function Download({ dl, show }) {
       }, 200);
   }
 
-  const streamProgress = dl.streamProgress
+  const streamProgressPercentage = dl.streamProgress
     ? Math.floor(dl.streamProgress.percentage)
     : 0;
 
   const now = Date.now();
   const secondsTaken = (now - dl.start) / 1000;
 
-  const percentageLeft = 100 - dl.streamProgress.percentage;
+  const percentageLeft = 100 - streamProgressPercentage;
 
   let expectedSecondsLeft;
   let totalExpectedSecondsTaken;
 
   if (percentageLeft) {
-    const doneRatio = percentageLeft / dl.streamProgress.percentage;
+    const doneRatio = percentageLeft / streamProgressPercentage;
 
     totalExpectedSecondsTaken = secondsTaken + secondsTaken * doneRatio;
 
@@ -194,7 +194,8 @@ function Download({ dl, show }) {
             }}
           >
             <div style={{ minWidth: 150 }}>
-              Download: {streamProgress}% ({dl.streamProgress?.bytesWritten}B/
+              Download: {streamProgressPercentage}% (
+              {dl.streamProgress?.bytesWritten}B/
               {dl.streamProgress?.bytesTotal}B)
               {percentageLeft
                 ? ` D:${Math.round(secondsTaken)} T:${Math.round(
@@ -211,7 +212,7 @@ function Download({ dl, show }) {
                 heigh: 10,
                 flexGrow: 1
               }}
-              value={dl.streamProgress ? dl.streamProgress.percentage : 0}
+              value={streamProgressPercentage}
             />
           </div>
           <div
