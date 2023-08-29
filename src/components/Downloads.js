@@ -103,6 +103,26 @@ function Download({ dl, show }) {
       }, 200);
   }
 
+  const streamProgress = dl.streamProgress
+    ? Math.floor(dl.streamProgress.percentage)
+    : 0;
+
+  const now = Date.now();
+  const secondsTaken = (now - dl.start) / 1000;
+
+  const percentageLeft = 100 - dl.streamProgress.percentage;
+
+  let expectedSecondsLeft;
+  let totalExpectedSecondsTaken;
+
+  if (percentageLeft) {
+    const doneRatio = percentageLeft / dl.streamProgress.percentage;
+
+    totalExpectedSecondsTaken = secondsTaken + secondsTaken * doneRatio;
+
+    expectedSecondsLeft = totalExpectedSecondsTaken - secondsTaken;
+  }
+
   return (
     // <Fade in>
     <Zoom in={show}>
@@ -127,8 +147,8 @@ function Download({ dl, show }) {
           }}
         >
           <Button
-            color="primary"
-            variant="contained"
+            color='primary'
+            variant='contained'
             onClick={handleDeleteClick}
             style={{ float: 'right' }}
           >
@@ -136,28 +156,28 @@ function Download({ dl, show }) {
           </Button>
 
           <Button
-            color="secondary"
-            variant="contained"
+            color='secondary'
+            variant='contained'
             onClick={handleRetryClick}
             style={{ float: 'right', marginRight: theme.spacing(1) }}
           >
             Retry
           </Button>
 
-          <Typography variant="body1">
+          <Typography variant='body1'>
             Title: {dl.video_info ? dl.video_info.title : '?'}
           </Typography>
-          <Typography variant="body1"></Typography>
-          <Typography variant="body1">
+          <Typography variant='body1'></Typography>
+          <Typography variant='body1'>
             <a
-              target="_blank"
+              target='_blank'
               href={`https://youtube.com/watch?v=${dl.v}`}
-              rel="noopener noreferrer"
+              rel='noopener noreferrer'
             >{`youtube.com/watch?v=`}</a>
             {dl.v} | Length seconds:{' '}
             {dl.video_info ? dl.video_info.length_seconds : null}
           </Typography>
-          <Typography variant="body1">
+          <Typography variant='body1'>
             Completed: <b>{dl.completed ? 'true' : 'false'}</b> | Error:{' '}
             <b>{dl.error ? 'true' : 'false'}</b> | Start:{' '}
             {/* {dl.start ? new Date(parseInt(dl.start)).toLocaleString() : null} */}
@@ -165,7 +185,7 @@ function Download({ dl, show }) {
               ? new Date(parseInt(dl.start)).toString().replace(/\sGMT.+/, '')
               : null}
           </Typography>
-          <Typography variant="body1"></Typography>
+          <Typography variant='body1'></Typography>
           <div
             style={{
               display: 'flex',
@@ -174,14 +194,17 @@ function Download({ dl, show }) {
             }}
           >
             <div style={{ minWidth: 150 }}>
-              Download:{' '}
-              {dl.streamProgress ? Math.floor(dl.streamProgress.percentage) : 0}
-              % ({dl.streamProgress?.bytesWritten}B/
+              Download: {streamProgress}% ({dl.streamProgress?.bytesWritten}B/
               {dl.streamProgress?.bytesTotal}B)
+              {percentageLeft
+                ? ` D:${Math.round(secondsTaken)} T:${Math.round(
+                    totalExpectedSecondsTaken
+                  )} L:${Math.round(expectedSecondsLeft)}`
+                : null}
             </div>
             <BorderLinearProgress
-              variant="determinate"
-              color="secondary"
+              variant='determinate'
+              color='secondary'
               style={{
                 marginLeft: isDesktop ? theme.spacing(1) : 0,
                 marginTop: isDesktop ? 6 : 0,
@@ -206,8 +229,8 @@ function Download({ dl, show }) {
               %
             </div>
             <BorderLinearProgress
-              variant="determinate"
-              color="secondary"
+              variant='determinate'
+              color='secondary'
               style={{
                 marginLeft: isDesktop ? theme.spacing(1) : 0,
                 marginTop: isDesktop ? 6 : 0,
@@ -279,7 +302,7 @@ function Download({ dl, show }) {
 
           <pre style={{ width: '100%', overflow: 'hidden', margin: 0 }}>
             DL:{'   '}
-            <a target="_blank" href={dl.working_url} rel="noopener noreferrer">
+            <a target='_blank' href={dl.working_url} rel='noopener noreferrer'>
               {dl.working_url}
             </a>
           </pre>
@@ -336,27 +359,27 @@ export default function Downloads() {
 
   return (
     <>
-      <FormControl component="fieldset">
-        <FormGroup aria-label="position" row onChange={handleFilterChange}>
+      <FormControl component='fieldset'>
+        <FormGroup aria-label='position' row onChange={handleFilterChange}>
           <FormControlLabel
-            value="progress"
-            control={<Checkbox color="secondary" />}
-            label="Progress"
-            labelPlacement="end"
+            value='progress'
+            control={<Checkbox color='secondary' />}
+            label='Progress'
+            labelPlacement='end'
             checked={showProgress}
           />
           <FormControlLabel
-            value="done"
-            control={<Checkbox color="secondary" />}
-            label="Done"
-            labelPlacement="end"
+            value='done'
+            control={<Checkbox color='secondary' />}
+            label='Done'
+            labelPlacement='end'
             checked={showDone}
           />
           <FormControlLabel
-            value="error"
-            control={<Checkbox color="secondary" />}
-            label="Error"
-            labelPlacement="end"
+            value='error'
+            control={<Checkbox color='secondary' />}
+            label='Error'
+            labelPlacement='end'
             checked={showError}
           />
         </FormGroup>
