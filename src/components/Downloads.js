@@ -14,7 +14,8 @@ import {
   FormControlLabel,
   Checkbox,
   FormGroup,
-  Zoom
+  Zoom,
+  TextField
 } from '@material-ui/core';
 
 const DOWNLOADS = gql`
@@ -329,8 +330,10 @@ function Download({ dl, show }) {
 }
 
 export default function Downloads() {
+  const [pollInterval, setPollInterval] = useState(2);
+
   const { loading, error, data } = useQuery(DOWNLOADS, {
-    pollInterval: 1000
+    pollInterval: (pollInterval < 0.5 ? 0.5 : pollInterval) * 1000
   });
   // console.log();
 
@@ -352,7 +355,6 @@ export default function Downloads() {
   if (error) return <p>Error :(</p>;
 
   function handleFilterChange(evt) {
-    console.log(evt.target.value);
     if (evt.target.value === 'progress') setShowProgress(evt.target.checked);
     else if (evt.target.value === 'done') setShowDone(evt.target.checked);
     else if (evt.target.value === 'error') setShowError(evt.target.checked);
@@ -385,6 +387,15 @@ export default function Downloads() {
           />
         </FormGroup>
       </FormControl>
+
+      <TextField
+        type='number'
+        onChange={evt => setPollInterval(evt.target.value)}
+        color='secondary'
+        value={pollInterval}
+        style={{ width: 50 }}
+        label='poll (s)'
+      />
 
       {[...data.downloads]
         .reverse()
