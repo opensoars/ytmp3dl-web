@@ -74,6 +74,27 @@ const BorderLinearProgress = withStyles({
   }
 })(LinearProgress);
 
+function formatN(n) {
+  return Math.round(n).toString().padStart(2, '0');
+}
+
+function prettifySeconds(seconds) {
+  let hours = 0;
+  let minutes = 0;
+
+  while (seconds >= 60) {
+    seconds -= 60;
+    minutes++;
+  }
+
+  while (minutes >= 60) {
+    minutes -= 60;
+    hours++;
+  }
+
+  return `${formatN(hours)}:${formatN(minutes)}:${formatN(seconds)}`;
+}
+
 function Download({ dl, show }) {
   const theme = useTheme();
   // const [retryDownload, { retryData }] = useMutation(RETRY_DOWNLOAD);
@@ -198,11 +219,17 @@ function Download({ dl, show }) {
               Download: {Math.round(streamProgressPercentage)}% (
               {dl.streamProgress?.bytesWritten}B/
               {dl.streamProgress?.bytesTotal}B)
-              {percentageLeft
-                ? ` D:${Math.round(secondsTaken)} T:${Math.round(
-                    totalExpectedSecondsTaken
-                  )} L:${Math.round(expectedSecondsLeft)}`
-                : null}
+              {percentageLeft ? (
+                <>
+                  &nbsp;
+                  <b>D</b>
+                  {prettifySeconds(secondsTaken)}&nbsp;
+                  <b>T</b>
+                  {prettifySeconds(totalExpectedSecondsTaken)}&nbsp;
+                  <b>L</b>
+                  {prettifySeconds(expectedSecondsLeft)}&nbsp;
+                </>
+              ) : null}
             </div>
             <BorderLinearProgress
               variant='determinate'
