@@ -424,6 +424,16 @@ export default function Downloads() {
         label='poll (s)'
       />
 
+      {/* <TextField
+        style={{ marginLeft: 8 }}
+        type='text'
+        // onChange={evt => setPollInterval(evt.target.value)}
+        color='secondary'
+        // value={pollInterval}
+        // style={{ width: 50 }}
+        label='server url'
+      /> */}
+
       {[...data.downloads]
         .reverse()
         .map(dl => {
