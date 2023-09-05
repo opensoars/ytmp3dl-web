@@ -1,0 +1,48 @@
+#RewriteEngine on
+#RewriteCond %{REQUEST_URI} !^/index.html$
+#RewriteCond %{REQUEST_URI} !\.(gif|jpe?g|png|css|js|php|ico)$
+#RewriteRule .* /index.html [L,R=302]
+
+#RewriteCond %{REQUEST_URI} !\.txt\.gz$
+#RewriteRule ^(/.*)\.css$ $1\.css.gz [L]
+#RewriteRule ^(/.*)\.js$ $1\.js.gz [L]
+
+# SERVE (REWRITE) GZIPPED FILES
+<FilesMatch ".+\.(js|css)\.gz$">
+    Options +MultiViews
+    RemoveType .gz
+    AddEncoding gzip .gz
+</FilesMatch>
+
+# CACHE
+<filesMatch "\.(html|htm|js\.gz|css\.gz)$">
+  FileETag None
+  <ifModule mod_headers.c>
+     Header unset ETag
+     Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
+     Header set Pragma "no-cache"
+     Header set Expires "Wed, 11 Jan 1984 05:00:00 GMT"
+  </ifModule>
+</filesMatch>
+
+#<FilesMatch "\.(?i:gif|jpe?g|png|ico|webp)$">
+#  <IfModule mod_headers.c>
+#    Header set Cache-Control "max-age=86400, public, must-revalidate"
+#  </IfModule>
+#</FilesMatch>
+
+# ALLOW REACT ROUTE LOADING
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-l
+  RewriteRule . /index.html [L]
+</IfModule>
+
+#<FilesMatch ".+\.tar\.gz$">
+#    RemoveEncoding .gz
+#    AddType application/gzip .gz
+#</FilesMatch>

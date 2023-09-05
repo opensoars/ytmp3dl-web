@@ -15,11 +15,16 @@
     "react-scripts": "3.4.1"
   },
   "scripts": {
-    "start": "BROWSER=google-chrome PORT=3005 react-scripts start",
+    "start": "BROWSER=google-chrome PORT=3005 GENERATE_SOURCEMAP=false react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "serve": "node ./scripts/server.js"
+    "serve": "node ./scripts/server.js",
+    "bnd": "npm run build && npm run gzip && npm run deploy",
+    "deploy": "node ./scripts/deploy.js",
+    "bnd:assets": "npm run build && npm run gzip && npm run deploy:assets",
+    "deploy:assets": "node ./scripts/deploy.js assets",
+    "gzip": "gzip -r ./build/static"
   },
   "eslintConfig": {
     "extends": "react-app"
