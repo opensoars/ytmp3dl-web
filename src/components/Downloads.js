@@ -79,7 +79,13 @@ function formatN(n) {
 }
 
 function prettifySeconds(seconds) {
-  if (typeof seconds !== 'number') return '';
+  if (
+    seconds === Infinity ||
+    typeof seconds !== 'number' ||
+    seconds > 60 * 60 * 24 * 7
+  ) {
+    return '';
+  }
 
   let hours = 0;
   let minutes = 0;
