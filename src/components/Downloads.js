@@ -79,7 +79,7 @@ function formatN(n) {
 }
 
 function prettifySeconds(seconds) {
-  if (typeof seconds !== 'number') return `...`;
+  if (typeof seconds !== 'number') return '';
 
   let hours = 0;
   let minutes = 0;
